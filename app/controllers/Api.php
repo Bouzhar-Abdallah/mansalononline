@@ -14,6 +14,7 @@
         }
 
         public function index(){
+            showd('hello');
         $this->header->init("GET");
         echo json_encode([
             "message" => "hello",

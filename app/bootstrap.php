@@ -7,4 +7,20 @@
     spl_autoload_register(function($classname){
         require_once ("libraries/".$classname.".php");
     });
-?>
+
+
+
+function show($stuff)
+{
+    echo "<pre>";
+    print_r($stuff);
+    echo "</pre>";
+    //die();
+}
+function showd($stuff)
+{
+    echo "<pre>";
+    print_r($stuff);
+    echo "</pre>";
+    die();
+}
