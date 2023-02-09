@@ -18,16 +18,22 @@ class Home extends Controller
     }
     public function signup()
     {
-
+        $model = new Model('utilisateur');
+        
         $this->header->init("POST");
         header('Content-Type: application/json');
+
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
             $data = json_decode(file_get_contents('php://input'), true);
-            $data['identifiant'] = $identifiant = $this->utilities->randomStrGenerator();
-            $model = new Model('utilisateur');
+            $identifiant = $this->utilities->randomStrGenerator();
+            $data['identifiant'] = $identifiant;
+            
             $model->insert($data);
-            if (isset($model->status->exception)) {
+            
+            if (isset($model->status->exception)) 
+            {
+                
                 $this->header->status(200, "not created");
                 echo json_encode(
                     [
@@ -36,8 +42,11 @@ class Home extends Controller
                     ]
                 );
                 die();
-            } else {
-                if ($model->status->success) {
+            
+            } else 
+            {
+                if ($model->status->success) 
+                {
 
                     $this->header->status(201, "Created");
                     echo json_encode([
@@ -51,6 +60,4 @@ class Home extends Controller
 
         die();
     }
-
-    
 }
