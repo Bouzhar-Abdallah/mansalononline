@@ -11,7 +11,7 @@ class Model extends Database
 
     function __construct($table = '')
     {
-
+        parent::__construct();
         $this->status = new stdClass;
         if ($table === '') {
 

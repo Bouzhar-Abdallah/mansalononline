@@ -13,30 +13,44 @@ class Home extends Controller
     }
     public function index($a = '', $b = '', $c = '')
     {
-        echo 'hello';
+        $str = $this->utilities->randomStrGenerator();
+        echo $str;
     }
-    public function test($a = '', $b = '', $c = '')
+    public function signup()
     {
-        $model = new Model('utilisateur');
-        $model->insert(
-            array(
-                'identifiant' => 'zzz',
-                'nom' => 'bouzhar',
-                'prenom' => 'abdallah',
-                'numero_tel' => '0649600623'
-            )
-        );
-        showd($model->status);
-        echo 'from test';
+
+        $this->header->init("POST");
+        header('Content-Type: application/json');
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+
+            $data = json_decode(file_get_contents('php://input'), true);
+            $data['identifiant'] = $identifiant = $this->utilities->randomStrGenerator();
+            $model = new Model('utilisateur');
+            $model->insert($data);
+            if (isset($model->status->exception)) {
+                $this->header->status(200, "not created");
+                echo json_encode(
+                    [
+                        "message" => "exception",
+                        "errorIngo" => $model->status->exception
+                    ]
+                );
+                die();
+            } else {
+                if ($model->status->success) {
+
+                    $this->header->status(201, "Created");
+                    echo json_encode([
+                        "message" => "client created",
+                        "token" => $identifiant,
+                    ]);
+                    die();
+                }
+            }
+        }
+
+        die();
     }
 
-    public function all()
-    {
-        $this->header->init("GET");
-        $this->header->status(200, "OK");
-        $model = new Model('utilisateur');
-        $data = $model->findAll();
-
-        echo json_encode($data);
-    }
+    
 }
