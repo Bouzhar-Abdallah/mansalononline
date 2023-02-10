@@ -23,7 +23,7 @@ class Home extends Controller
         $this->header->init("POST");
         header('Content-Type: application/json');
 
-        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
             $data = json_decode(file_get_contents('php://input'), true);
             $identifiant = $this->utilities->randomStrGenerator();
@@ -38,7 +38,8 @@ class Home extends Controller
                 echo json_encode(
                     [
                         "message" => "exception",
-                        "errorIngo" => $model->status->exception
+                        "errorIngo" => $model->status->exception,
+                        
                     ]
                 );
                 die();
@@ -52,10 +53,13 @@ class Home extends Controller
                     echo json_encode([
                         "message" => "client created",
                         "token" => $identifiant,
+                        
                     ]);
                     die();
                 }
             }
+        }else {
+            
         }
 
         die();
