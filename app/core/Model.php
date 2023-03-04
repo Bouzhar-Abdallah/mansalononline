@@ -99,14 +99,7 @@ class Model extends Database
 
     public function insert($data)
     {
-        /* removing unwanted data */
-        if (!empty($this->allowedColumns)) {
-            foreach ($this->allowedColumns as $key => $value) {
-                if (!in_array($key, $this->allowedColumns)) {
-                    unset($data[$key]);
-                }
-            }
-        }
+       
 
         $keys = array_keys($data);
         $query = "insert into $this->table (" . implode(",", $keys) . ") values (:" . implode(",:", $keys) . ")";
@@ -160,5 +153,60 @@ class Model extends Database
         $query = "select count($s) from $this->table";
 
         return $this->query($query);
+    }
+
+
+    /**  */
+    public function available_Spots_Per_Day($data = []){
+        
+      
+        
+        $query = "SELECT
+        (
+            SELECT available_hours
+            FROM horaires
+            WHERE jour = :jour
+        ) - (
+            SELECT
+            COUNT(id)
+            FROM Rendez_vous
+            WHERE date_jour = :date_jour
+        ) AS available_hours";
+
+        return $this->query($query,$data);
+    }
+
+    public function reserved_Spots_Per_Day($data){
+        unset($data['jour']);
+        $query = "
+        SELECT heure 
+        FROM Rendez_vous
+        WHERE date_jour = :date_jour
+        ";
+        $data = $this->query($query, $data);
+        $response = [];
+
+        foreach ($data as $key => $value) {
+            $response[$key] = $value['heure'];
+        }
+        return $response;
+    }
+
+    public function working_houres($data){
+        unset($data['date_jour']);
+        $query = "
+        SELECT ouverture_matain, fermeture_matain, ouverture_midi, fermeture_midi 
+        FROM horaires
+        WHERE jour = :jour
+        ";
+        return $this->query($query, $data);
+    }
+
+    public function pending($data){
+        
+        $query = "
+        select count(identifiant_utilisateur) as count from Rendez_vous where date_jour >= DATE_ADD(CURDATE(), INTERVAL 0 DAY) && identifiant_utilisateur = :identifiant_utilisateur
+        ";
+        return $this->query($query,$data)[0]['count'];
     }
 }

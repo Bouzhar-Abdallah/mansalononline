@@ -18,11 +18,15 @@ class Database
         $connection = $this->connection;
         $this->status->query = $query;
         $this->status->data = $data;
-        
+        foreach ($data as $key => $value) {
+            
+        }
+        //showd($query);
         try {
             $statement = $connection->prepare($query);
             $success = $statement->execute($data);
             $this->status->success = $success;
+            $this->status->affected_rows = 0;
             if ($success) {
                 $this->status->affected_rows = $statement->rowCount();
                 $this->status->last_insert_id = $connection->lastInsertId();

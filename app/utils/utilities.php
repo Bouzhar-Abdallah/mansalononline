@@ -8,5 +8,9 @@
                 $result .= $tmp[rand() & ($len - 1)];
             return $result;
         }
+
+        public function orgnise_day_data(){
+            
+        }
     }
 ?>
